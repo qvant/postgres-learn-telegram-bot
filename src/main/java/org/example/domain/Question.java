@@ -15,7 +15,7 @@ public class Question {
     Long id;
 
     String text;
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
     List<Answer> answers;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "correct_answer_id")
