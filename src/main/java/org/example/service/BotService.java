@@ -3,6 +3,8 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.BotConfig;
+import org.example.domain.Answer;
+import org.example.domain.Question;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -11,6 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMa
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -18,7 +21,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BotService extends TelegramLongPollingBot {
 
+    private static final String RANDOM_QUESTION = "RANDOM_QUESTION";
+    private static final String ANSWER = "ANSWER";
+
     private final BotConfig botConfig;
+    private final QuestionService questionService;
     @Override
     public String getBotUsername() {
         return botConfig.getBotName();
@@ -40,8 +47,8 @@ public class BotService extends TelegramLongPollingBot {
                 case "/start":
                     startBot(chatId, memberName);
                     break;
-                case "RANDOM_QUESTION":
-                    sendQuestion(chatId, memberName);
+                case RANDOM_QUESTION:
+                    sendQuestion(chatId);
                     break;
                 default: {log.info("Unexpected message");
                     sendMessage(chatId, update.getMessage().getText());};
@@ -51,11 +58,38 @@ public class BotService extends TelegramLongPollingBot {
             log.info("update");
             if (update.hasCallbackQuery() && update.getCallbackQuery().getFrom().getId() != null){
                 long chatId = update.getCallbackQuery().getFrom().getId();
-                sendQuestion(chatId, "memberName");
+                log.info(update.getCallbackQuery().getData());
+                log.info(update.getCallbackQuery().getMessage().getText());
+                var callback = update.getCallbackQuery().getData();
+                if (callback.startsWith(ANSWER)){
+                    Long questionId = Long.parseLong(callback.substring(callback.indexOf("_") + 1, callback.indexOf("=")));
+                    log.info("questionId {}", questionId);
+                    Long answerId = Long.parseLong(callback.substring(callback.indexOf("=") + 1));
+                    log.info("answerId {}", answerId);
+                    var question = questionService.getQuestion(questionId);
+                    if (question.isPresent()){
+                        if (question.get().getCorrectAnswer().getId() == answerId){
+                            sendMessage(chatId, "Correct!");
+                        }
+                        else {
+                            sendMessage(chatId, "Incorrect :(");
+                        }
+                    }
+
+                }
+                else if (callback.startsWith(RANDOM_QUESTION)){
+                    log.info("CCCC");
+                    sendQuestion(chatId);
+                }
+                else {
+                    log.info("BBBB");
+                }
+            }
+            else {
+                log.info("AAA");
             }
         }
     }
-
 
 
     private void startBot(long chatId, String userName) {
@@ -63,10 +97,10 @@ public class BotService extends TelegramLongPollingBot {
         message.setChatId((Long.toString(chatId)));
         message.setText("Hello, " + userName + "! I'm a Telegram bot.");
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton randowQuestion = new InlineKeyboardButton();
-        randowQuestion.setText("Random question");
-        randowQuestion.setCallbackData("RANDOM_QUESTION");
-        List<InlineKeyboardButton> buttons = List.of(randowQuestion);
+        InlineKeyboardButton randomQuestion = new InlineKeyboardButton();
+        randomQuestion.setText("Random question");
+        randomQuestion.setCallbackData(RANDOM_QUESTION);
+        List<InlineKeyboardButton> buttons = List.of(randomQuestion);
         inlineKeyboardMarkup.setKeyboard(List.of(buttons));
         message.setReplyMarkup(inlineKeyboardMarkup);
 
@@ -78,23 +112,40 @@ public class BotService extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(long chatId, String userName) {
+    private void sendMessage(long chatId, String text) {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
-        message.setText(userName);
+        message.setText(text);
 
         try {
             execute(message);
-            log.info("Reply sent");
+            log.info("Message sent");
         } catch (TelegramApiException e){
             log.error(e.getMessage());
         }
     }
-    private void sendQuestion(long chatId, String userName) {
+    private void sendQuestion(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
-        message.setText("RANDOM");
-
+        var question = questionService.getQuestion();
+        if (question.isPresent()) {
+            message.setText(question.get().getText());
+            InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+            List<InlineKeyboardButton> buttons = new ArrayList<>();
+            for (Answer answer: question.get().getAnswers()
+                 ) {
+                InlineKeyboardButton answerButton = new InlineKeyboardButton();
+                answerButton.setText(answer.getText());
+                answerButton.setCallbackData(ANSWER + "_" + question.get().getId() + "=" + answer.getId());
+                log.info("Added button");
+                buttons.add(answerButton);
+            }
+            inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+            message.setReplyMarkup(inlineKeyboardMarkup);
+        }
+        else {
+            message.setText("There is no questions");
+        }
         try {
             execute(message);
             log.info("Reply sent");

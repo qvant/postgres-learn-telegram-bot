@@ -8,3 +8,13 @@ spring:
     username: telegram_pg_learn_bot
     password: db
     driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create
+    show-sql: true
+    database: postgresql
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      data-locations: data.sql
