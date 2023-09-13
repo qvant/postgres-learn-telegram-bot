@@ -21,4 +21,8 @@ public class Question {
     @JoinColumn(name = "correct_answer_id")
     Answer correctAnswer;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    Category category;
+
 }
