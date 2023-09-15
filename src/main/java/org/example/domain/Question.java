@@ -25,4 +25,8 @@ public class Question {
     @JoinColumn(name = "category_id")
     Category category;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "level_id")
+    Level level;
+
 }

@@ -51,7 +51,7 @@ public class BotService extends TelegramLongPollingBot {
                     sendQuestion(chatId);
                     break;
                 default: {log.info("Unexpected message");
-                    sendMessage(chatId, update.getMessage().getText());};
+                    sendMessage(chatId, update.getMessage().getText(), getMainKeyboard());};
             }
         }
         else {
@@ -69,10 +69,12 @@ public class BotService extends TelegramLongPollingBot {
                     var question = questionService.getQuestion(questionId);
                     if (question.isPresent()){
                         if (question.get().getCorrectAnswer().getId() == answerId){
-                            sendMessage(chatId, "Correct!");
+                            InlineKeyboardMarkup keyboard = getMainKeyboard();
+                            sendMessage(chatId, "Correct!", keyboard);
                         }
                         else {
-                            sendMessage(chatId, "Incorrect :(");
+                            InlineKeyboardMarkup keyboard = getMainKeyboard();
+                            sendMessage(chatId, "Incorrect :(", keyboard);
                         }
                     }
 
@@ -112,10 +114,21 @@ public class BotService extends TelegramLongPollingBot {
         }
     }
 
-    private void sendMessage(long chatId, String text) {
+    private InlineKeyboardMarkup getMainKeyboard(){
+        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardButton randomQuestion = new InlineKeyboardButton();
+        randomQuestion.setText("Random question");
+        randomQuestion.setCallbackData(RANDOM_QUESTION);
+        List<InlineKeyboardButton> buttons = List.of(randomQuestion);
+        inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+        return inlineKeyboardMarkup;
+    }
+
+    private void sendMessage(long chatId, String text, InlineKeyboardMarkup keyboardMarkup) {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
         message.setText(text);
+        message.setReplyMarkup(keyboardMarkup);
 
         try {
             execute(message);
