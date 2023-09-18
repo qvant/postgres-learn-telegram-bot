@@ -9,11 +9,11 @@ import javax.persistence.*;
 @Table(name="answers")
 public class Answer {
     @Id
-    Long id;
-    String text;
+    private Long id;
+    private String text;
     @ManyToOne
     @JoinColumn(name = "question_id")
-    Question question;
+    private Question question;
 
     public void setQuestion(Question question) {
         this.question = question;

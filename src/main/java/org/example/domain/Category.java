@@ -11,6 +11,6 @@ import javax.persistence.Table;
 @Table(name="categories")
 public class Category {
     @Id
-    Long id;
-    String name;
+    private Long id;
+    private String name;
 }

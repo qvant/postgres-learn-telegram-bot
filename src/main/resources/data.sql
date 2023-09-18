@@ -1,8 +1,14 @@
 insert into levels (id, name) values (1, 'Junior');
 insert into levels (id, name) values (2, 'Middle');
 insert into levels (id, name) values (3, 'Senior');
-insert into questions(id, text) values (-1, 'some question');
+insert into categories (id, name) values (-1, 'mock category');
+insert into categories (id, name) values (-2, 'another mock category');
+insert into questions(id, text, category_id) values (-1, 'some question', -1);
+insert into questions(id, text, category_id) values (-2, 'another question', -2);
 insert into answers(id, text, question_id) values (-1, 'AA', -1);
 insert into answers(id, text, question_id) values (-2, 'BB', -1);
+insert into answers(id, text, question_id) values (-3, 'CC', -2);
+insert into answers(id, text, question_id) values (-4, 'DD', -2);
 update questions set correct_answer_id = -1 where id = -1;
+update questions set correct_answer_id = -4 where id = -2;
 commit;

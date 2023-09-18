@@ -12,21 +12,21 @@ import java.util.Stack;
 @Table(name="questions")
 public class Question {
     @Id
-    Long id;
+    private Long id;
 
-    String text;
+    private String text;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "question")
-    List<Answer> answers;
+    private List<Answer> answers;
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "correct_answer_id")
-    Answer correctAnswer;
+    private Answer correctAnswer;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "category_id")
-    Category category;
+    private Category category;
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "level_id")
-    Level level;
+    private Level level;
 
 }

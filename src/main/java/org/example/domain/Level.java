@@ -11,6 +11,6 @@ import javax.persistence.Table;
 @Table(name="levels")
 public class Level {
     @Id
-    Long id;
-    String name;
+    private Long id;
+    private String name;
 }
