@@ -76,7 +76,7 @@ public class BotService extends TelegramLongPollingBot {
                     log.info("answerId {}", answerId);
                     var question = questionService.getQuestion(questionId);
                     if (question.isPresent()){
-                        if (question.get().getCorrectAnswer().getId() == answerId){
+                        if (question.get().getCorrectAnswer().getId().equals(answerId)){
                             InlineKeyboardMarkup keyboard = getMainKeyboard();
                             sendMessage(chatId, "Correct!", keyboard);
                         }
