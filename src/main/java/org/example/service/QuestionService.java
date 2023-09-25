@@ -24,6 +24,14 @@ public class QuestionService {
         return Optional.empty();
     }
 
+    public Optional <Question> getQuestionByCategory(Long categoryId){
+        List<Question> questions = repository.findByCategoryId(categoryId);
+        if (questions.size() > 0){
+            return Optional.of(questions.get((int) (Math.random() * questions.size())));
+        }
+        return Optional.empty();
+    }
+
     public Optional <Question> getQuestion(Long id){
         return repository.findById(id);
     }

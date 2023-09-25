@@ -2,15 +2,15 @@ package org.example.domain;
 
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
 @Table(name="categories")
 public class Category {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_gen")
+    @SequenceGenerator(name = "categories_gen", sequenceName = "S_CATEGORIES", initialValue = 2000)
     private Long id;
     private String name;
 }

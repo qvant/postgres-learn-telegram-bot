@@ -12,6 +12,8 @@ import java.util.Stack;
 @Table(name="questions")
 public class Question {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questions_gen")
+    @SequenceGenerator(name = "questions_gen", sequenceName = "S_QUESTIONS", initialValue = 2000)
     private Long id;
 
     private String text;

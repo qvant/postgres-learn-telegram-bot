@@ -32,6 +32,13 @@ public class UserService {
             user.setTelegramId(id);
         }
         user.setCategory(category);
+        repository.save(user);
+        if (category != null) {
+            log.info("Set category {} for user {} [{}]", category.getName(), user.getTelegramId(), user.getId());
+        }
+        else {
+            log.info("Set null category for user {} [{}]", user.getTelegramId(), user.getId());
+        }
     }
 
 }

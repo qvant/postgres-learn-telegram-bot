@@ -10,6 +10,8 @@ import javax.persistence.*;
 @Table(name="users")
 public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_gen")
+    @SequenceGenerator(name = "users_gen", sequenceName = "S_USERS", initialValue = 2000)
     private Long id;
     @Setter
     private Long telegramId;

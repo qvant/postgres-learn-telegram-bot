@@ -17,6 +17,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -27,6 +28,7 @@ public class BotService extends TelegramLongPollingBot {
     private static final String SELECT_CATEGORY = "SELECT_CATEGORY";
     private static final String ANSWER = "ANSWER";
     private static final String CATEGORY = "CATEGORY";
+    private static final String CATEGORY_ALL = "ALL";
 
     private final BotConfig botConfig;
     private final QuestionService questionService;
@@ -86,21 +88,24 @@ public class BotService extends TelegramLongPollingBot {
 
                 }
                 else if (callback.startsWith(CATEGORY)){
-                    log.info("EEEE");
-                    //sendQuestion(chatId);
-                    Long categoryId = Long.parseLong(callback.substring(callback.indexOf("_") + 1));
-                    Category category = categoryService.getCategory(categoryId).orElseThrow(() -> new RuntimeException("Category " + categoryId + " not found"));
+                    String categoryCode =  callback.substring(callback.indexOf("_") + 1);
+                    Category category;
+                    if (!categoryCode.equals(CATEGORY_ALL)) {
+                        Long categoryId = Long.parseLong(callback.substring(callback.indexOf("_") + 1));
+                        category = categoryService.getCategory(categoryId).orElseThrow(() -> new RuntimeException("Category " + categoryId + " not found"));
+                    }
+                    else{
+                        category = null;
+                    }
                     userService.setCategory(chatId, category);
                     InlineKeyboardMarkup keyboard = getMainKeyboard();
                     sendMessage(chatId, "Category saved", keyboard);
 
                 }
                 else if (callback.startsWith(RANDOM_QUESTION)){
-                    log.info("CCCC");
                     sendQuestion(chatId);
                 }
                 else if (callback.startsWith(SELECT_CATEGORY)){
-                    log.info("DDD");
                     sendCategoryList(chatId);
                 }
                 else {
@@ -118,12 +123,7 @@ public class BotService extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
         message.setText("Hello, " + userName + "! I'm a Telegram bot.");
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        InlineKeyboardButton randomQuestion = new InlineKeyboardButton();
-        randomQuestion.setText("Random question");
-        randomQuestion.setCallbackData(RANDOM_QUESTION);
-        List<InlineKeyboardButton> buttons = List.of(randomQuestion);
-        inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+        InlineKeyboardMarkup inlineKeyboardMarkup = getMainKeyboard();
         message.setReplyMarkup(inlineKeyboardMarkup);
 
         try {
@@ -163,7 +163,17 @@ public class BotService extends TelegramLongPollingBot {
     private void sendQuestion(long chatId) {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
-        var question = questionService.getQuestion();
+        var user = userService.findUserByTelegramId(chatId);
+        Optional<Question> question;
+        Category category = user.getCategory();
+        if (category != null){
+            log.info("Select question for category {} and user {}", category.getName(), chatId);
+            question = questionService.getQuestionByCategory(user.getCategory().getId());
+        }
+        else {
+            log.info("Select random question for user {}", chatId);
+            question = questionService.getQuestion();
+        }
         if (question.isPresent()) {
             message.setText(question.get().getText());
             InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
@@ -205,6 +215,10 @@ public class BotService extends TelegramLongPollingBot {
                 log.info("Added button");
                 buttons.add(categoryButton);
             }
+            InlineKeyboardButton emptyButton = new InlineKeyboardButton();
+            emptyButton.setText("All categories");
+            emptyButton.setCallbackData(CATEGORY + "_" + CATEGORY_ALL);
+            buttons.add(emptyButton);
             inlineKeyboardMarkup.setKeyboard(List.of(buttons));
             message.setReplyMarkup(inlineKeyboardMarkup);
         }
