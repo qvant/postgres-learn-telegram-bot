@@ -10,11 +10,11 @@ import javax.persistence.*;
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "answers_gen")
-    @SequenceGenerator(name = "answers_gen", sequenceName = "S_ANSWERS", initialValue = 2000)
+    @SequenceGenerator(name = "answers_gen", sequenceName = "s_answers", initialValue = 2000)
     private Long id;
     private String text;
     @ManyToOne
-    @JoinColumn(name = "question_id")
+    @JoinColumn(name = "question_id", foreignKey=@ForeignKey(name="fk_answers_question"))
     private Question question;
 
     public void setQuestion(Question question) {

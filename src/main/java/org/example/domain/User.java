@@ -11,11 +11,12 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_gen")
-    @SequenceGenerator(name = "users_gen", sequenceName = "S_USERS", initialValue = 2000)
+    @SequenceGenerator(name = "users_gen", sequenceName = "s_users", initialValue = 2000)
     private Long id;
     @Setter
     private Long telegramId;
     @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id", foreignKey=@ForeignKey(name="fk_users_category"))
     @Setter
     private Category category;
 }
