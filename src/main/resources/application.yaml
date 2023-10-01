@@ -10,11 +10,17 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     show-sql: true
     database: postgresql
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
   sql:
     init:
-      mode: always
+      mode: never
       data-locations: data.sql
+  liquibase:
+    enabled: true
+    change-log: db/changelog/db.changelog-master.yaml
+
+  main:
+    allow-circular-references: true

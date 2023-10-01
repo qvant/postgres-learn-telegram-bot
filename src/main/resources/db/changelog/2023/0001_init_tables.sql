@@ -1,0 +1,52 @@
+-- liquibase formatted sql
+--changeset <author name>:<0001>
+CREATE SEQUENCE  IF NOT EXISTS s_categories START WITH 2000 INCREMENT BY 50;
+
+CREATE TABLE categories (
+  id BIGINT NOT NULL,
+   name VARCHAR(255),
+   CONSTRAINT pk_categories PRIMARY KEY (id)
+);
+
+CREATE TABLE levels (
+  id BIGINT NOT NULL,
+   name VARCHAR(255),
+   CONSTRAINT pk_levels PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE  IF NOT EXISTS s_questions START WITH 2000 INCREMENT BY 50;
+
+CREATE TABLE questions (
+  id BIGINT NOT NULL,
+   text VARCHAR(255),
+   correct_answer_id BIGINT,
+   category_id BIGINT,
+   level_id BIGINT,
+   CONSTRAINT pk_questions PRIMARY KEY (id)
+);
+
+
+
+CREATE SEQUENCE  IF NOT EXISTS s_answers START WITH 2000 INCREMENT BY 50;
+
+CREATE TABLE answers (
+  id BIGINT NOT NULL,
+   text VARCHAR(255),
+   question_id BIGINT,
+   CONSTRAINT pk_answers PRIMARY KEY (id)
+);
+
+CREATE SEQUENCE  IF NOT EXISTS s_users START WITH 2000 INCREMENT BY 50;
+
+CREATE TABLE users (
+  id BIGINT NOT NULL,
+   telegram_id BIGINT,
+   category_id BIGINT,
+   CONSTRAINT pk_users PRIMARY KEY (id)
+);
+
+ALTER TABLE questions ADD CONSTRAINT FK_QUESTIONS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
+ALTER TABLE questions ADD CONSTRAINT FK_QUESTIONS_ON_CORRECT_ANSWER FOREIGN KEY (correct_answer_id) REFERENCES answers (id);
+ALTER TABLE answers ADD CONSTRAINT FK_ANSWERS_ON_QUESTION FOREIGN KEY (question_id) REFERENCES questions (id);
+ALTER TABLE questions ADD CONSTRAINT FK_QUESTIONS_ON_LEVEL FOREIGN KEY (level_id) REFERENCES levels (id);
+ALTER TABLE users ADD CONSTRAINT FK_USERS_ON_CATEGORY FOREIGN KEY (category_id) REFERENCES categories (id);
