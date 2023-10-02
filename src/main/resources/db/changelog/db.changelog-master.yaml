@@ -2,4 +2,10 @@ databaseChangeLog:
   - include:
       file: db/changelog/2023/0001_init_tables.sql
   - include:
-      file: db/changelog/2023/0002_init_questions.sql
+      file: db/changelog/2023/0002_init_levels.sql
+  - include:
+      file: db/changelog/2023/0003_init_questions_psql.sql
+  - include:
+      file: db/changelog/2023/0004_init_questions_data_types.sql
+  - include:
+      file: db/changelog/2023/0005_init_questions_plans.sql

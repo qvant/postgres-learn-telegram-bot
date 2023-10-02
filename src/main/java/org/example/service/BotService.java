@@ -6,7 +6,6 @@ import org.example.config.BotConfig;
 import org.example.domain.Answer;
 import org.example.domain.Category;
 import org.example.domain.Question;
-import org.example.domain.User;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -18,6 +17,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.example.utility.KeyboardUtils.formatKeyboard;
 
 @Slf4j
 @Service
@@ -143,7 +144,7 @@ public class BotService extends TelegramLongPollingBot {
         categorySelect.setText("Select category");
         categorySelect.setCallbackData(SELECT_CATEGORY);
         List<InlineKeyboardButton> buttons = List.of(randomQuestion, categorySelect);
-        inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+        inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
         return inlineKeyboardMarkup;
     }
 
@@ -186,7 +187,7 @@ public class BotService extends TelegramLongPollingBot {
                 log.info("Added button");
                 buttons.add(answerButton);
             }
-            inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+            inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
             message.setReplyMarkup(inlineKeyboardMarkup);
         }
         else {
@@ -219,7 +220,7 @@ public class BotService extends TelegramLongPollingBot {
             emptyButton.setText("All categories");
             emptyButton.setCallbackData(CATEGORY + "_" + CATEGORY_ALL);
             buttons.add(emptyButton);
-            inlineKeyboardMarkup.setKeyboard(List.of(buttons));
+            inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
             message.setReplyMarkup(inlineKeyboardMarkup);
         }
         else {
@@ -232,4 +233,5 @@ public class BotService extends TelegramLongPollingBot {
             log.error(e.getMessage());
         }
     }
+
 }
