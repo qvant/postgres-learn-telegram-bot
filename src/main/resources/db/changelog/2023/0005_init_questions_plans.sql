@@ -22,6 +22,12 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read t
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Fetch sequence from cache', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read the whole index', currval('s_questions'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'What is seq_page_cost?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Amount of time, needed to read row from disc', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Amount of time, needed to save row on disc', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Planner''s estimate of the cost of a disk page fetch that is part of a series of sequential fetches.', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Planner''s estimate of the cost of fetching sequence value', currval('s_questions'));
 
 
 commit;
