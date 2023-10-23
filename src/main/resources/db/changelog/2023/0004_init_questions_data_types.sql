@@ -52,4 +52,18 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'curren
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'current transaction''s start time', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'midnight (00:00) today', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are NOT allowed for boolean?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'yes', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'on' , currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'truth', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '1', currval('s_questions'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are allowed for boolean?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'nope', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'off' , currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-1', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'nil', currval('s_questions'));
+
+
 commit;

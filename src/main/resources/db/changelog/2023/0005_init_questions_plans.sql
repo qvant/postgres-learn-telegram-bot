@@ -28,6 +28,11 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Amount
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Planner''s estimate of the cost of a disk page fetch that is part of a series of sequential fetches.', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Planner''s estimate of the cost of fetching sequence value', currval('s_questions'));
-
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'What the Bitmap Index Scan does?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read the inner structures to access index pages more efficiently', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read in-memory bitmap to combine two indexes', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read the leafs of bitmap index', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read the index and build bitmap of potential row locations', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
 commit;
