@@ -9,7 +9,7 @@ import java.util.Stack;
 
 @Getter
 @Entity
-@Table(name="questions")
+@Table(name="questions", schema = "telegram_pg_learn_bot")
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questions_gen")

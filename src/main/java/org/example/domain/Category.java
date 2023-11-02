@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Getter
 @Entity
-@Table(name="categories")
+@Table(name="categories", schema = "telegram_pg_learn_bot")
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_gen")
