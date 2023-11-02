@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class KeyboardUtils {
-    private static final int MAX_ROW_LENGTH = 30;
+    private static final int MAX_ROW_LENGTH = 25;
     public static List<List<InlineKeyboardButton>> formatKeyboard(List<InlineKeyboardButton> buttons){
         List<InlineKeyboardButton> currentRow = new ArrayList<>();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();

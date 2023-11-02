@@ -27,6 +27,7 @@ public class BotService extends TelegramLongPollingBot {
 
     private static final String RANDOM_QUESTION = "RANDOM_QUESTION";
     private static final String SELECT_CATEGORY = "SELECT_CATEGORY";
+    private static final String ABOUT = "ABOUT";
     private static final String ANSWER = "ANSWER";
     private static final String CATEGORY = "CATEGORY";
     private static final String CATEGORY_ALL = "ALL";
@@ -109,6 +110,9 @@ public class BotService extends TelegramLongPollingBot {
                 else if (callback.startsWith(SELECT_CATEGORY)){
                     sendCategoryList(chatId);
                 }
+                else if (callback.startsWith(ABOUT)){
+                    sendAbout(chatId);
+                }
                 else {
                     log.info("BBBB");
                 }
@@ -143,7 +147,10 @@ public class BotService extends TelegramLongPollingBot {
         InlineKeyboardButton categorySelect = new InlineKeyboardButton();
         categorySelect.setText("Select category");
         categorySelect.setCallbackData(SELECT_CATEGORY);
-        List<InlineKeyboardButton> buttons = List.of(randomQuestion, categorySelect);
+        InlineKeyboardButton about = new InlineKeyboardButton();
+        about.setText("About me");
+        about.setCallbackData(ABOUT);
+        List<InlineKeyboardButton> buttons = List.of(randomQuestion, categorySelect, about);
         inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
         return inlineKeyboardMarkup;
     }
@@ -226,6 +233,19 @@ public class BotService extends TelegramLongPollingBot {
         else {
             message.setText("There is no categories");
         }
+        try {
+            execute(message);
+            log.info("Reply sent");
+        } catch (TelegramApiException e){
+            log.error(e.getMessage());
+        }
+    }
+    private void sendAbout(long chatId) {
+        SendMessage message = new SendMessage();
+        message.setChatId((Long.toString(chatId)));
+        message.setText("I'm pg learning bot, You can find mu source code on https://github.com/qvant/postgres-learn-telegram-bot");
+        InlineKeyboardMarkup keyboard = getMainKeyboard();
+        message.setReplyMarkup(keyboard);
         try {
             execute(message);
             log.info("Reply sent");
