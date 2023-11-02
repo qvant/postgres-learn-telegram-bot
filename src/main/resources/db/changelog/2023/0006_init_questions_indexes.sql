@@ -19,5 +19,11 @@ update questions set correct_answer_id = currval('s_answers') where id = currval
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read all pointers to leafs from parent node and read them in batch, if it''s not enough, return to the parent''s parent', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Read all pointers to leafs from parent node and read them one-by-one, if it''s not enough, return to the parent''s parent', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which operations are supported by hash index?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '=', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '=, <, >', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '=, =<, >=', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '=, !=', currval('s_questions'));
 
 commit;
