@@ -53,4 +53,5 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Additi
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Part of index keys that don''t fit backet key', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Extras pages that keep pairs (hash, tid), which don''t fit backet page' , currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+
 commit;
