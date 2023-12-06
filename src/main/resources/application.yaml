@@ -1,6 +1,7 @@
 telegram:
   token: env
   bot_name: "pg_learn_bot"
+  admin_accounts: env
 spring:
   datasource:
     #url: jdbc:h2:mem:testdb

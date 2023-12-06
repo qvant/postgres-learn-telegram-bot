@@ -12,14 +12,14 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Serial
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Serial is equivalent of int8', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Serial and int4 are the same datatype', currval('s_questions'));
 
-insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which fact about json datatype is incorrect?', 1, currval('s_categories'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which fact about json datatype is incorrect?', 2, currval('s_categories'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Json keep data as is, the exact copy on original text', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'JSON in json field must be correct' , currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Json keep data in binary key-value format', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Json preserve order of keys', currval('s_questions'));
 
-insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which fact about jsonb datatype is incorrect?', 1, currval('s_categories'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which fact about jsonb datatype is incorrect?', 2, currval('s_categories'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Jsonb keep data as is, the exact copy on original text', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'JSONb in json field must be correct' , currval('s_questions'));
@@ -61,14 +61,14 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'curren
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'midnight (00:00) today', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
-insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are NOT allowed for boolean?', 1, currval('s_categories'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are NOT allowed for boolean?', 2, currval('s_categories'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'yes', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'on' , currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'truth', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), '1', currval('s_questions'));
 
-insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are allowed for boolean?', 1, currval('s_categories'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are allowed for boolean?', 2, currval('s_categories'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'nope', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'off' , currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');

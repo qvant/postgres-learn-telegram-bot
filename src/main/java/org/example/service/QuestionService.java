@@ -31,6 +31,20 @@ public class QuestionService {
         }
         return Optional.empty();
     }
+    public Optional <Question> getQuestionByCategoryAndLevel(Long categoryId, Long levelId){
+        List<Question> questions = repository.findByCategoryIdAndLevelId(categoryId, levelId);
+        if (questions.size() > 0){
+            return Optional.of(questions.get((int) (Math.random() * questions.size())));
+        }
+        return Optional.empty();
+    }
+    public Optional <Question> getQuestionByLevel(Long levelId){
+        List<Question> questions = repository.findByLevelId(levelId);
+        if (questions.size() > 0){
+            return Optional.of(questions.get((int) (Math.random() * questions.size())));
+        }
+        return Optional.empty();
+    }
 
     public Optional <Question> getQuestion(Long id){
         return repository.findById(id);

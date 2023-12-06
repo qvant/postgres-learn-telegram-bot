@@ -19,4 +19,8 @@ public class User {
     @JoinColumn(name = "category_id", foreignKey=@ForeignKey(name="fk_users_category"))
     @Setter
     private Category category;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "level_id", foreignKey=@ForeignKey(name="fk_users_level"))
+    @Setter
+    private Level level;
 }

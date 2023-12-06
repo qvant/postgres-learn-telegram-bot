@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/changelog/2023/0005_init_questions_plans.sql
   - include:
       file: db/changelog/2023/0006_init_questions_indexes.sql
+  - include:
+      file: db/changelog/2023/0007_init_questions_sql.sql

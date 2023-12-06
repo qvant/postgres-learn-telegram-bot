@@ -3,6 +3,7 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.domain.Category;
+import org.example.domain.Level;
 import org.example.domain.Question;
 import org.example.domain.User;
 import org.example.repository.CategoryRepository;
@@ -38,6 +39,20 @@ public class UserService {
         }
         else {
             log.info("Set null category for user {} [{}]", user.getTelegramId(), user.getId());
+        }
+    }@Transactional
+    public void setLevel(Long id, Level level){
+        User user = repository.findUserByTelegramId(id).orElse(new User());
+        if (user.getTelegramId() == null){
+            user.setTelegramId(id);
+        }
+        user.setLevel(level);
+        repository.save(user);
+        if (level != null) {
+            log.info("Set level {} for user {} [{}]", level.getName(), user.getTelegramId(), user.getId());
+        }
+        else {
+            log.info("Set null level for user {} [{}]", user.getTelegramId(), user.getId());
         }
     }
 
