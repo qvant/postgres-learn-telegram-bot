@@ -23,4 +23,10 @@ public class User {
     @JoinColumn(name = "level_id", foreignKey=@ForeignKey(name="fk_users_level"))
     @Setter
     private Level level;
+
+    public void enrichTelegramId(Long newTelegramId){
+        if (telegramId == null){
+            telegramId = newTelegramId;
+        }
+    }
 }
