@@ -48,6 +48,13 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'NEW', 
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'INSERT', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'The semicolon at the and of statement is optional?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'No', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Only in psql, where it forces query to execute', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, but can be redefined', currval('s_questions'));
+
 
 
 commit;

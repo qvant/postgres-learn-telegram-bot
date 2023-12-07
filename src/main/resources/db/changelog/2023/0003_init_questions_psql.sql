@@ -137,4 +137,18 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), '\e', c
 insert into answers(id, text, question_id) values (nextval('s_answers'), '\q!', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), '\wq!', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'How to print information about current connection?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\c', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\conn', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\conninfo', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\conect', currval('s_questions'));
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'How to repeat query every N seconds?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\cron', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\repeat', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\tail', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\watch', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+
 commit;
