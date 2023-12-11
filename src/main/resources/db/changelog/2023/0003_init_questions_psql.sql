@@ -151,4 +151,12 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), '\tail'
 insert into answers(id, text, question_id) values (nextval('s_answers'), '\watch', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'How to connect to the database?', 1, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '\connect db_name', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'connect db_name', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '--connect db_name', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-run db_name', currval('s_questions'));
+
 commit;
