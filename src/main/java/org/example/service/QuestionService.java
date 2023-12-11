@@ -15,35 +15,30 @@ import java.util.Optional;
 public class QuestionService {
     private final QuestionRepository repository;
 
-
-    public Optional <Question> getQuestion(){
-        List<Question> questions = repository.findAll();
+    private static Optional<Question> selectQuestion(List<Question> questions){
         if (questions.size() > 0){
             return Optional.of(questions.get((int) (Math.random() * questions.size())));
         }
         return Optional.empty();
+    }
+
+
+    public Optional <Question> getQuestion(){
+        List<Question> questions = repository.findAll();
+        return selectQuestion(questions);
     }
 
     public Optional <Question> getQuestionByCategory(Long categoryId){
         List<Question> questions = repository.findByCategoryId(categoryId);
-        if (questions.size() > 0){
-            return Optional.of(questions.get((int) (Math.random() * questions.size())));
-        }
-        return Optional.empty();
+        return selectQuestion(questions);
     }
     public Optional <Question> getQuestionByCategoryAndLevel(Long categoryId, Long levelId){
         List<Question> questions = repository.findByCategoryIdAndLevelId(categoryId, levelId);
-        if (questions.size() > 0){
-            return Optional.of(questions.get((int) (Math.random() * questions.size())));
-        }
-        return Optional.empty();
+        return selectQuestion(questions);
     }
     public Optional <Question> getQuestionByLevel(Long levelId){
         List<Question> questions = repository.findByLevelId(levelId);
-        if (questions.size() > 0){
-            return Optional.of(questions.get((int) (Math.random() * questions.size())));
-        }
-        return Optional.empty();
+        return selectQuestion(questions);
     }
 
     public Optional <Question> getQuestion(Long id){
