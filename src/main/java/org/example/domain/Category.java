@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "categories_gen")
-    @SequenceGenerator(name = "categories_gen", sequenceName = "s_categories", initialValue = 2000)
+    @SequenceGenerator(name = "categories_gen", sequenceName = "s_categories", initialValue = 2000, allocationSize=1)
     private Long id;
     private String name;
 }

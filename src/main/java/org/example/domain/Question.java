@@ -13,7 +13,7 @@ import java.util.Stack;
 public class Question {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "questions_gen")
-    @SequenceGenerator(name = "questions_gen", sequenceName = "s_questions", initialValue = 2000)
+    @SequenceGenerator(name = "questions_gen", sequenceName = "s_questions", initialValue = 2000, allocationSize=1)
     private Long id;
 
     private String text;

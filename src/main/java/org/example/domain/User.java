@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "users_gen")
-    @SequenceGenerator(name = "users_gen", sequenceName = "s_users", initialValue = 2000)
+    @SequenceGenerator(name = "users_gen", sequenceName = "s_users", initialValue = 2000, allocationSize=1)
     private Long id;
     @Setter
     private Long telegramId;

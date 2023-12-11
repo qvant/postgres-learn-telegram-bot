@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class Answer {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "answers_gen")
-    @SequenceGenerator(name = "answers_gen", sequenceName = "s_answers", initialValue = 2000)
+    @SequenceGenerator(name = "answers_gen", sequenceName = "s_answers", initialValue = 2000, allocationSize=1)
     private Long id;
     private String text;
     @ManyToOne
