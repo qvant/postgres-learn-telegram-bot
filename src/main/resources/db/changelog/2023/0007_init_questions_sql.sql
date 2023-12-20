@@ -62,6 +62,32 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Ok', c
 insert into answers(id, text, question_id) values (nextval('s_answers'), '1', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Choose one quality that are transaction property?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Durability', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Performance', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Parallel execution', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Distribution', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Choose one quality that are transaction property?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Performance', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Isolation', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Parallel execution', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Distribution', currval('s_questions'));
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Choose one quality that are transaction property?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Performance', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Parallel execution', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Atomicity', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Distribution', currval('s_questions'));
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Choose one quality that are transaction property?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Performance', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Parallel execution', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Consistency', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Distribution', currval('s_questions'));
 
 commit;

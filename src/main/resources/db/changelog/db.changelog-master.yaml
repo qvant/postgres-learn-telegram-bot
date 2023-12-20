@@ -15,3 +15,5 @@ databaseChangeLog:
       file: db/changelog/2023/0007_init_questions_sql.sql
   - include:
       file: db/changelog/2023/0008_init_questions_pg_catalog.sql
+  - include:
+      file: db/changelog/2023/0009_init_questions_setup.sql

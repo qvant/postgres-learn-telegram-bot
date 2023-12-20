@@ -117,5 +117,11 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Scans 
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Scans the work table used in evaluating a recursive common table expression', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'What the Recheck Cond does?', 3, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Examine which rows on page needs to return', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Combine multiple indexes into one', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Remove uncommited changes', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'There is no such operation', currval('s_questions'));
 
 commit;

@@ -159,4 +159,18 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'connec
 insert into answers(id, text, question_id) values (nextval('s_answers'), '--connect db_name', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), '-run db_name', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'How to enforce psql to ask password?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-w', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-W', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-p', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-ef', currval('s_questions'));
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'How to enforce psql to ask password?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-w', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '--force', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '--password', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '--force-password', currval('s_questions'));
+
 commit;

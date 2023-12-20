@@ -75,5 +75,20 @@ update questions set correct_answer_id = currval('s_answers') where id = currval
 insert into answers(id, text, question_id) values (nextval('s_answers'), '-1', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'nil', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are not allowed for float?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Infinity', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '-Infinity' , currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'nil', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'NaN', currval('s_questions'));
+
+
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Which value are not allowed for float?', 2, currval('s_categories'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Inf', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'infinity' , currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'INFINITY', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'All three values are allowed', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+
 
 commit;
