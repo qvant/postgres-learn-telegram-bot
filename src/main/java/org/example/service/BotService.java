@@ -9,6 +9,7 @@ import org.example.domain.Level;
 import org.example.domain.Question;
 import org.example.utility.CommandStringsHolder;
 import org.example.utility.KeyboardUtils;
+import org.example.utility.ParserUtils;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
@@ -51,11 +52,10 @@ public class BotService extends TelegramLongPollingBot {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
-            String memberName = update.getMessage().getFrom().getFirstName();
 
             switch (messageText) {
                 case "/start":
-                    startBot(chatId, memberName);
+                    startBot(chatId);
                     break;
                 case CommandStringsHolder.RANDOM_QUESTION:
                     sendQuestion(chatId);
@@ -70,11 +70,10 @@ public class BotService extends TelegramLongPollingBot {
             if (update.hasCallbackQuery() && update.getCallbackQuery().getFrom().getId() != null) {
                 long chatId = update.getCallbackQuery().getFrom().getId();
                 var callback = update.getCallbackQuery().getData();
+                log.info("Received answer callback {} from user {}", callback, chatId);
                 if (callback.startsWith(CommandStringsHolder.ANSWER)) {
-                    Long questionId = Long.parseLong(callback.substring(callback.indexOf("_") + 1, callback.indexOf("=")));
-                    log.info("questionId {}", questionId);
-                    Long answerId = Long.parseLong(callback.substring(callback.indexOf("=") + 1));
-                    log.info("answerId {}", answerId);
+                    Long questionId = ParserUtils.getQuestionId(callback);
+                    Long answerId = ParserUtils.getAnswerId(callback);
                     var question = questionService.getQuestion(questionId);
                     if (question.isPresent()) {
                         if (question.get().getCorrectAnswer().getId().equals(answerId)) {
@@ -87,30 +86,36 @@ public class BotService extends TelegramLongPollingBot {
                     }
 
                 } else if (callback.startsWith(CommandStringsHolder.CATEGORY)) {
-                    String categoryCode = callback.substring(callback.indexOf("_") + 1);
+                    String categoryCode = ParserUtils.getCode(callback);
                     Category category;
+                    String message;
                     if (!categoryCode.equals(CommandStringsHolder.CATEGORY_ALL)) {
-                        Long categoryId = Long.parseLong(callback.substring(callback.indexOf("_") + 1));
+                        Long categoryId = ParserUtils.getId(callback);
                         category = categoryService.getCategory(categoryId).orElseThrow(() -> new RuntimeException("Category " + categoryId + " not found"));
+                        message = "Category " + category.getName() + " set";
                     } else {
                         category = null;
+                        message = "Category \"All questions\" set";
                     }
                     userService.setCategory(chatId, category);
                     InlineKeyboardMarkup keyboard = KeyboardUtils.getMainKeyboard();
-                    sendMessage(chatId, "Category saved", keyboard);
+                    sendMessage(chatId, message, keyboard);
 
                 } else if (callback.startsWith(CommandStringsHolder.LEVEL)) {
-                    String levelCode = callback.substring(callback.indexOf("_") + 1);
+                    String levelCode = ParserUtils.getCode(callback);
                     Level level;
+                    String message;
                     if (!levelCode.equals(CommandStringsHolder.LEVEL_ALL)) {
-                        Long LevelId = Long.parseLong(callback.substring(callback.indexOf("_") + 1));
+                        Long LevelId = ParserUtils.getId(callback);
                         level = levelService.getLevel(LevelId).orElseThrow(() -> new RuntimeException("Level " + LevelId + " not found"));
+                        message = "Level " + level.getName() + " set";
                     } else {
                         level = null;
+                        message = "Level \"All levels\" set";
                     }
                     userService.setLevel(chatId, level);
                     InlineKeyboardMarkup keyboard = KeyboardUtils.getMainKeyboard();
-                    sendMessage(chatId, "Category saved", keyboard);
+                    sendMessage(chatId, message, keyboard);
 
                 } else if (callback.startsWith(CommandStringsHolder.RANDOM_QUESTION)) {
                     sendQuestion(chatId);
@@ -121,19 +126,19 @@ public class BotService extends TelegramLongPollingBot {
                 } else if (callback.startsWith(CommandStringsHolder.ABOUT)) {
                     sendAbout(chatId);
                 } else {
-                    log.info("BBBB");
+                    log.warn("Unknown callback {} from user {}", callback, chatId);
                 }
             } else {
-                log.info("AAA");
+                log.warn("Unhandled update {}", update);
             }
         }
     }
 
 
-    private void startBot(long chatId, String userName) {
-        String message = "Hello, " + userName + "! I'm a Postgres learning bot.";
+    private void startBot(long chatId) {
+        String message = "Hello! I'm a Postgres learning bot.";
         sendMessage(chatId, message, KeyboardUtils.getMainKeyboard());
-        log.info("Start bot reply sent");
+        log.info("Start bot reply sent to user {}", chatId);
     }
 
     private void sendMessage(long chatId, String text, InlineKeyboardMarkup keyboardMarkup) {
@@ -147,7 +152,7 @@ public class BotService extends TelegramLongPollingBot {
         }
         try {
             execute(message);
-            log.info("Message sent");
+            log.info("Message {} sent to user {}", text, chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
@@ -181,7 +186,6 @@ public class BotService extends TelegramLongPollingBot {
                 InlineKeyboardButton answerButton = new InlineKeyboardButton();
                 answerButton.setText(answer.getText());
                 answerButton.setCallbackData(CommandStringsHolder.ANSWER + "_" + question.get().getId() + "=" + answer.getId());
-                log.info("Added button");
                 buttons.add(answerButton);
             }
             inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
@@ -189,7 +193,7 @@ public class BotService extends TelegramLongPollingBot {
             message = "There is no questions";
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
-        log.info("Reply sent to {}", chatId);
+        log.info("Reply {} sent to {}", message, chatId);
     }
 
     private void sendCategoryList(long chatId) {
@@ -204,7 +208,6 @@ public class BotService extends TelegramLongPollingBot {
                 InlineKeyboardButton categoryButton = new InlineKeyboardButton();
                 categoryButton.setText(category.getName());
                 categoryButton.setCallbackData(CommandStringsHolder.CATEGORY + "_" + category.getId());
-                log.info("Added button");
                 buttons.add(categoryButton);
             }
             InlineKeyboardButton emptyButton = new InlineKeyboardButton();
@@ -216,7 +219,7 @@ public class BotService extends TelegramLongPollingBot {
             message = "There is no categories";
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
-        log.info("Reply sent");
+        log.info("Reply on category select request {} sent to user {}", message, chatId);
     }
 
     private void sendLevelList(long chatId) {
@@ -231,7 +234,6 @@ public class BotService extends TelegramLongPollingBot {
                 InlineKeyboardButton categoryButton = new InlineKeyboardButton();
                 categoryButton.setText(level.getName());
                 categoryButton.setCallbackData(CommandStringsHolder.LEVEL + "_" + level.getId());
-                log.info("Added button");
                 buttons.add(categoryButton);
             }
             InlineKeyboardButton emptyButton = new InlineKeyboardButton();
@@ -243,7 +245,7 @@ public class BotService extends TelegramLongPollingBot {
             message = "There is no levels";
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
-        log.info("Reply sent");
+        log.info("Reply on level select request {} sent to user {}", message, chatId);
     }
 
     private void sendAbout(long chatId) {
@@ -251,7 +253,7 @@ public class BotService extends TelegramLongPollingBot {
         message = "I'm Postgres learning bot, You can find my source code on https://github.com/qvant/postgres-learn-telegram-bot";
         InlineKeyboardMarkup keyboard = KeyboardUtils.getMainKeyboard();
         sendMessage(chatId, message, keyboard);
-        log.info("Reply sent");
+        log.info("About message {} sent to user {}", message, chatId);
     }
 
     @PostConstruct
