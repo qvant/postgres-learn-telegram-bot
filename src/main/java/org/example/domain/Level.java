@@ -8,7 +8,7 @@ import javax.persistence.Table;
 
 @Getter
 @Entity
-@Table(name="levels", schema = "telegram_pg_learn_bot")
+@Table(name = "levels", schema = "telegram_pg_learn_bot")
 public class Level {
     @Id
     private Long id;

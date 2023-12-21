@@ -1,6 +1,5 @@
 package org.example.utility;
 
-import org.example.service.BotService;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
@@ -11,15 +10,16 @@ import static org.example.utility.CommandStringsHolder.*;
 
 public class KeyboardUtils {
     private static final int MAX_ROW_LENGTH = 25;
-    public static List<List<InlineKeyboardButton>> formatKeyboard(List<InlineKeyboardButton> buttons){
+
+    public static List<List<InlineKeyboardButton>> formatKeyboard(List<InlineKeyboardButton> buttons) {
         List<InlineKeyboardButton> currentRow = new ArrayList<>();
         List<List<InlineKeyboardButton>> keyboard = new ArrayList<>();
-        int currentRowTextLength =0;
-        for (InlineKeyboardButton button: buttons
+        int currentRowTextLength = 0;
+        for (InlineKeyboardButton button : buttons
         ) {
             currentRow.add(button);
             currentRowTextLength += button.getText().length();
-            if (currentRowTextLength > MAX_ROW_LENGTH){
+            if (currentRowTextLength > MAX_ROW_LENGTH) {
                 keyboard.add(currentRow);
                 currentRow = new ArrayList<>();
                 currentRowTextLength = 0;
@@ -31,7 +31,7 @@ public class KeyboardUtils {
         return keyboard;
     }
 
-    public static InlineKeyboardMarkup getMainKeyboard(){
+    public static InlineKeyboardMarkup getMainKeyboard() {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         InlineKeyboardButton randomQuestion = new InlineKeyboardButton();
         randomQuestion.setText("Random question");

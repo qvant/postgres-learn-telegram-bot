@@ -15,9 +15,11 @@ import java.util.Optional;
 public class LevelService {
     private final LevelRepository repository;
 
-    public List<Level> findAll(){return  repository.findAll();}
+    public List<Level> findAll() {
+        return repository.findAll();
+    }
 
-    public Optional <Level> getLevel(Long id){
+    public Optional<Level> getLevel(Long id) {
         return repository.findById(id);
     }
 }

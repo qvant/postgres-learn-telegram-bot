@@ -3,10 +3,7 @@ package org.example.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.BotConfig;
-import org.example.domain.Answer;
-import org.example.domain.Category;
-import org.example.domain.Level;
-import org.example.domain.Question;
+import org.example.domain.*;
 import org.example.utility.CommandStringsHolder;
 import org.example.utility.KeyboardUtils;
 import org.example.utility.ParserUtils;
@@ -64,7 +61,6 @@ public class BotService extends TelegramLongPollingBot {
                     log.info("Unexpected message {}", messageText);
                     sendMessage(chatId, update.getMessage().getText(), KeyboardUtils.getMainKeyboard());
                 }
-                ;
             }
         } else {
             if (update.hasCallbackQuery() && update.getCallbackQuery().getFrom().getId() != null) {
@@ -145,7 +141,7 @@ public class BotService extends TelegramLongPollingBot {
         SendMessage message = new SendMessage();
         message.setChatId((Long.toString(chatId)));
         message.setText(text);
-        if ( keyboardMarkup.getKeyboard() != null && keyboardMarkup.getKeyboard().size() > 0) {
+        if (keyboardMarkup.getKeyboard() != null && keyboardMarkup.getKeyboard().size() > 0) {
             message.setReplyMarkup(keyboardMarkup);
         } else {
             message.setReplyMarkup(getMainKeyboard());
@@ -161,7 +157,7 @@ public class BotService extends TelegramLongPollingBot {
     private void sendQuestion(long chatId) {
         String message;
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        var user = userService.findUserByTelegramId(chatId);
+        User user = userService.findUserByTelegramId(chatId);
         Optional<Question> question;
         Category category = user.getCategory();
         Level level = user.getLevel();
@@ -199,7 +195,7 @@ public class BotService extends TelegramLongPollingBot {
     private void sendCategoryList(long chatId) {
         String message;
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        var categoryList = categoryService.findAll();
+        List<Category> categoryList = categoryService.findAll();
         if (categoryList.size() > 0) {
             message = "Select category";
             List<InlineKeyboardButton> buttons = new ArrayList<>();
@@ -225,7 +221,7 @@ public class BotService extends TelegramLongPollingBot {
     private void sendLevelList(long chatId) {
         String message;
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
-        var levelList = levelService.findAll();
+        List<Level> levelList = levelService.findAll();
         if (levelList.size() > 0) {
             message = "Select level";
             List<InlineKeyboardButton> buttons = new ArrayList<>();
