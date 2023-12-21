@@ -70,7 +70,7 @@ public class BotService extends TelegramLongPollingBot {
                 if (callback.startsWith(CommandStringsHolder.ANSWER)) {
                     Long questionId = ParserUtils.getQuestionId(callback);
                     Long answerId = ParserUtils.getAnswerId(callback);
-                    var question = questionService.getQuestion(questionId);
+                    var question = questionService.getQuestionById(questionId);
                     if (question.isPresent()) {
                         if (question.get().getCorrectAnswer().getId().equals(answerId)) {
                             InlineKeyboardMarkup keyboard = KeyboardUtils.getMainKeyboard();
@@ -158,22 +158,7 @@ public class BotService extends TelegramLongPollingBot {
         String message;
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         User user = userService.findUserByTelegramId(chatId);
-        Optional<Question> question;
-        Category category = user.getCategory();
-        Level level = user.getLevel();
-        if (category != null && level != null) {
-            log.info("Select question for category {}, level {} and user {}", category.getName(), level.getName(), chatId);
-            question = questionService.getQuestionByCategoryAndLevel(category.getId(), level.getId());
-        } else if (category != null) {
-            log.info("Select question for category {} and user {}", category.getName(), chatId);
-            question = questionService.getQuestionByCategory(category.getId());
-        } else if (level != null) {
-            log.info("Select question for category {} and user {}", level.getName(), chatId);
-            question = questionService.getQuestionByLevel(level.getId());
-        } else {
-            log.info("Select random question for user {}", chatId);
-            question = questionService.getQuestion();
-        }
+        Optional<Question> question = questionService.getQuestionForUser(user);
         if (question.isPresent()) {
             message = question.get().getText();
             List<InlineKeyboardButton> buttons = new ArrayList<>();
@@ -264,7 +249,7 @@ public class BotService extends TelegramLongPollingBot {
                 log.error("{} when send start notification to {}", exception.getMessage(), adminChatId);
             }
         }
-        log.info("All admins were notified");
+        log.info("All {} admins were notified", botConfig.getAdminAccounts().size());
     }
 
 }
