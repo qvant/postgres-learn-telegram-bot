@@ -27,7 +27,7 @@ spring:
     allow-circular-references: true
 logging:
   file:
-    name: logs\bot.log
+    name: logs/bot.log
     max-size: 1MB
     max-history: 10
   pattern:
