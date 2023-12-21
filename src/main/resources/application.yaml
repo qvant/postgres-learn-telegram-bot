@@ -25,3 +25,10 @@ spring:
 
   main:
     allow-circular-references: true
+logging:
+  file:
+    name: logs\bot.log
+    max-size: 1MB
+    max-history: 10
+  pattern:
+    rolling-file-name:bot-%d{yyyy-MM-dd}.%i.log
