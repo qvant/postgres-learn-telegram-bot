@@ -1,2 +1,2 @@
 #!/bin/bash
-java -jar postgres-telegram-bot.jar
+java -jar postgres-telegram-bot.jar  & disown

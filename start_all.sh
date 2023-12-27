@@ -1,3 +1,3 @@
 #!/bin/bash
 sleep 70
-java -jar postgres-telegram-bot.jar
+java -jar postgres-telegram-bot.jar  & disown
