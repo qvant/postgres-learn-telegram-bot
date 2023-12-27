@@ -148,7 +148,7 @@ public class BotService extends TelegramLongPollingBot {
         }
         try {
             execute(message);
-            log.info("Message {} sent to user {}", text, chatId);
+            log.info("Message \"{}\" sent to user {}", text, chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
@@ -160,15 +160,20 @@ public class BotService extends TelegramLongPollingBot {
         User user = userService.findUserByTelegramId(chatId);
         Optional<Question> question = questionService.getQuestionForUser(user);
         if (question.isPresent()) {
-            message = question.get().getText();
             List<InlineKeyboardButton> buttons = new ArrayList<>();
+            StringBuilder messageBuilder = new StringBuilder(question.get().getText());
+            // Start answer index from capital ASCII A.
+            int charIndex = 65;
             for (Answer answer : question.get().getAnswers()
             ) {
+                messageBuilder.append("\n").append((char)charIndex).append(") ").append(answer.getText());
                 InlineKeyboardButton answerButton = new InlineKeyboardButton();
-                answerButton.setText(answer.getText());
+                answerButton.setText(String.valueOf((char)charIndex));
                 answerButton.setCallbackData(CommandStringsHolder.ANSWER + "_" + question.get().getId() + "=" + answer.getId());
                 buttons.add(answerButton);
+                charIndex++;
             }
+            message = messageBuilder.toString();
             inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
         } else {
             message = "There is no questions";
