@@ -19,3 +19,5 @@ databaseChangeLog:
       file: db/changelog/2023/0009_init_questions_setup.sql
   - include:
       file: db/changelog/2024/0001_fix_answers_text.sql
+  - include:
+      file: db/changelog/2024/0002_add_pg_catalog_questions.sql

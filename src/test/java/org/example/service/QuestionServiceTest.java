@@ -4,12 +4,11 @@ import org.example.domain.Category;
 import org.example.domain.Level;
 import org.example.domain.Question;
 import org.example.domain.User;
-import org.example.repository.LevelRepository;
 import org.example.repository.QuestionRepository;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -19,23 +18,24 @@ class QuestionServiceTest {
     private static long QUESTION_ID = 1L;
     private static long LEVEL_ID = 2L;
     private static long CATEGORY_ID = 3L;
-    @Autowired
     private QuestionService questionService;
+    private QuestionRepository questionRepository;
+    @BeforeEach
+    public void setUp(){
+        questionRepository = Mockito.mock(QuestionRepository.class);
+        questionService = new QuestionService(questionRepository);
+    }
 
     @Test
-    public void testFindById(){
-        QuestionRepository questionRepository = Mockito.mock(QuestionRepository.class);
-        questionService = new QuestionService(questionRepository);
+    public void testFindById() {
         questionService.getQuestionById(QUESTION_ID);
         Mockito.verify(questionRepository).findById(QUESTION_ID);
     }
 
     @Test
-    public void testFindByUserSimple(){
-        QuestionRepository questionRepository = Mockito.mock(QuestionRepository.class);
+    public void testFindByUserSimple() {
         Question question = new Question();
         Mockito.when(questionRepository.findAll()).thenReturn(List.of(question));
-        questionService = new QuestionService(questionRepository);
         User user = new User();
         var returnedQuestion = questionService.getQuestionForUser(user);
         Assertions.assertEquals(returnedQuestion.get(), question);
@@ -43,11 +43,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    public void testFindByUserWithCategory(){
-        QuestionRepository questionRepository = Mockito.mock(QuestionRepository.class);
+    public void testFindByUserWithCategory() {
         Question question = new Question();
         Mockito.when(questionRepository.findByCategoryId(CATEGORY_ID)).thenReturn(List.of(question));
-        questionService = new QuestionService(questionRepository);
         User user = new User();
         Category category = new Category();
         category.setId(CATEGORY_ID);
@@ -58,11 +56,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    public void testFindByUserWithLevel(){
-        QuestionRepository questionRepository = Mockito.mock(QuestionRepository.class);
+    public void testFindByUserWithLevel() {
         Question question = new Question();
         Mockito.when(questionRepository.findByLevelId(LEVEL_ID)).thenReturn(List.of(question));
-        questionService = new QuestionService(questionRepository);
         User user = new User();
         Level level = new Level();
         level.setId(LEVEL_ID);
@@ -73,11 +69,9 @@ class QuestionServiceTest {
     }
 
     @Test
-    public void testFindByUserWithCategoryAndLevel(){
-        QuestionRepository questionRepository = Mockito.mock(QuestionRepository.class);
+    public void testFindByUserWithCategoryAndLevel() {
         Question question = new Question();
         Mockito.when(questionRepository.findByCategoryIdAndLevelId(CATEGORY_ID, LEVEL_ID)).thenReturn(List.of(question));
-        questionService = new QuestionService(questionRepository);
         User user = new User();
         Category category = new Category();
         category.setId(CATEGORY_ID);

@@ -166,9 +166,9 @@ public class BotService extends TelegramLongPollingBot {
             int charIndex = 65;
             for (Answer answer : question.get().getAnswers()
             ) {
-                messageBuilder.append("\n").append((char)charIndex).append(") ").append(answer.getText());
+                messageBuilder.append("\n").append((char) charIndex).append(") ").append(answer.getText());
                 InlineKeyboardButton answerButton = new InlineKeyboardButton();
-                answerButton.setText(String.valueOf((char)charIndex));
+                answerButton.setText(String.valueOf((char) charIndex));
                 answerButton.setCallbackData(CommandStringsHolder.ANSWER + "_" + question.get().getId() + "=" + answer.getId());
                 buttons.add(answerButton);
                 charIndex++;
