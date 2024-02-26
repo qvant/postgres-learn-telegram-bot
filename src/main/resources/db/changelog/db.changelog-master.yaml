@@ -21,3 +21,5 @@ databaseChangeLog:
       file: db/changelog/2024/0001_fix_answers_text.sql
   - include:
       file: db/changelog/2024/0002_add_pg_catalog_questions.sql
+  - include:
+      file: db/changelog/2024/0003_add_index_questions.sql

@@ -4,7 +4,7 @@
 
 insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'Which table keep all triggers?', 1, id
 from categories where name = 'pg_catalog');
-insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_triggers', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_trigger', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_triggers', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_objects', currval('s_questions'));
