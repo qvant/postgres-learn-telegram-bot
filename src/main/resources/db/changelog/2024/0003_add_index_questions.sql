@@ -43,5 +43,14 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Allow 
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Defer constraint check, enforced ny GIN index', currval('s_questions'));
 
 
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'Can SP-GIST store keys, longer than disk page?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, always', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, when operator keep extra info in parent page prefixes', currval('s_questions'));
+update questions set correct_answerg_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'No, key must fit disk page', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, but only for strings', currval('s_questions'));
+
+
 
 commit;
