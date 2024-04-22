@@ -47,10 +47,54 @@ insert into questions(id, text, level_id, category_id) (select nextval('s_questi
 from categories where name = 'indexes');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, always', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, when operator keep extra info in parent page prefixes', currval('s_questions'));
-update questions set correct_answerg_id = currval('s_answers') where id = currval('s_questions');
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'No, key must fit disk page', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Yes, but only for strings', currval('s_questions'));
 
+
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'How many pages index one BRIN record by default?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '1', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '32', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), '128', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), '512', currval('s_questions'));
+
+
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'Which data keeps BRIN for number?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'All values', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'All values and their quantities', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'All values and their TIDs', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Only min and max values', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+
+
+
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'How BRIN maintained during INSERT?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Aggregate info extended, if needed', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Aggregate info extended and new TID added', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''doesn''t maintained during INSERT', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Aggregate info completely recalculated', currval('s_questions'));
+
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'How BRIN maintained during DELETE?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Aggregate info extended, if needed', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''doesn''t maintained during delete', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Old TID removed', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'Aggregate info completely recalculated', currval('s_questions'));
+
+
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'How BRIN works?', 3, id
+from categories where name = 'indexes');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It stores array of keys per pages range', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It stores array of keys per pages range and their respective TIDs', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It stores aggregated data per pages range, e.g. min and max values', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It stores array of keys and TID of their first occurrence in range', currval('s_questions'));
 
 
 commit;
