@@ -13,7 +13,7 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_tab
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'pg_users', currval('s_questions'));
 
 
-insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Where is search_path is pg_catalog?', 1, currval('s_categories'));
+insert into questions(id, text, level_id, category_id) values (nextval('s_questions'), 'Where in search_path is pg_catalog?', 1, currval('s_categories'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''s always on the first place in search path', currval('s_questions'));
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''s always on the first place in search path if not included explicitly', currval('s_questions'));
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');

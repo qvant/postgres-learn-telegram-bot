@@ -112,6 +112,14 @@ insert into answers(id, text, question_id) values (nextval('s_answers'), 'Up to 
 update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
 insert into answers(id, text, question_id) values (nextval('s_answers'), 'Up to 8 bytes', currval('s_questions'));
 
+insert into questions(id, text, level_id, category_id) (select nextval('s_questions'), 'What are propose of oid datatype?', 3, id
+from categories where name = 'data types');
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'There is no such datatype', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''s synonym for uid', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It''s just synonym for int4 datatype', currval('s_questions'));
+insert into answers(id, text, question_id) values (nextval('s_answers'), 'It'' used as globally unique id  for system catalog objects', currval('s_questions'));
+update questions set correct_answer_id = currval('s_answers') where id = currval('s_questions');
+
 
 
 commit;
