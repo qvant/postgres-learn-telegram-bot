@@ -50,7 +50,7 @@ public class QuestionService {
         return repository.findById(id);
     }
 
-    public Optional<Question> getQuestionForUser(User user){
+    public Optional<Question> getQuestionForUser(User user) {
         Category category = user.getCategory();
         Level level = user.getLevel();
         Optional<Question> question;
