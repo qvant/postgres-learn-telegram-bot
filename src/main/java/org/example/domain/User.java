@@ -1,11 +1,13 @@
 package org.example.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Getter
+@NoArgsConstructor
 @Entity
 @Table(name = "users", schema = "telegram_pg_learn_bot")
 public class User {

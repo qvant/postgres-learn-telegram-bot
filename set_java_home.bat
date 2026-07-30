@@ -1,1 +1,1 @@
-set JAVA_HOME=%HOMEPATH%\.jdks\liberica-17.0.5
+set JAVA_HOME=%HOMEPATH%\.jdks\liberica-full-17.0.14

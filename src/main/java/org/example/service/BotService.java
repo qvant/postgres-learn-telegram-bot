@@ -1,5 +1,6 @@
 package org.example.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.example.config.BotConfig;
@@ -8,14 +9,17 @@ import org.example.utility.CommandStringsHolder;
 import org.example.utility.KeyboardUtils;
 import org.example.utility.ParserUtils;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
+import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer;
+import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot;
+import org.telegram.telegrambots.longpolling.util.LongPollingSingleThreadUpdateConsumer;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+import org.telegram.telegrambots.meta.generics.TelegramClient;
 
-import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,7 +30,7 @@ import static org.example.utility.KeyboardUtils.getMainKeyboard;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class BotService extends TelegramLongPollingBot {
+public class BotService implements SpringLongPollingBot, LongPollingSingleThreadUpdateConsumer {
 
     private final BotConfig botConfig;
     private final QuestionService questionService;
@@ -34,10 +38,7 @@ public class BotService extends TelegramLongPollingBot {
     private final LevelService levelService;
     private final UserService userService;
 
-    @Override
-    public String getBotUsername() {
-        return botConfig.getBotName();
-    }
+    private TelegramClient telegramClient;
 
     @Override
     public String getBotToken() {
@@ -45,7 +46,12 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     @Override
-    public void onUpdateReceived(Update update) {
+    public LongPollingUpdateConsumer getUpdatesConsumer() {
+        return this;
+    }
+
+    @Override
+    public void consume(Update update) {
         if (update.hasMessage() && update.getMessage().hasText()) {
             String messageText = update.getMessage().getText();
             long chatId = update.getMessage().getChatId();
@@ -138,16 +144,14 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     private void sendMessage(long chatId, String text, InlineKeyboardMarkup keyboardMarkup) {
-        SendMessage message = new SendMessage();
-        message.setChatId((Long.toString(chatId)));
-        message.setText(text);
+        SendMessage message = new SendMessage(Long.toString(chatId), text);
         if (keyboardMarkup.getKeyboard() != null && keyboardMarkup.getKeyboard().size() > 0) {
             message.setReplyMarkup(keyboardMarkup);
         } else {
             message.setReplyMarkup(getMainKeyboard());
         }
         try {
-            execute(message);
+            telegramClient.execute(message);
             log.info("Message \"{}\" sent to user {}", text, chatId);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
@@ -156,7 +160,7 @@ public class BotService extends TelegramLongPollingBot {
 
     private void sendQuestion(long chatId) {
         String message;
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardMarkup inlineKeyboardMarkup;
         User user = userService.findUserByTelegramId(chatId);
         Optional<Question> question = questionService.getQuestionForUser(user);
         if (question.isPresent()) {
@@ -167,16 +171,16 @@ public class BotService extends TelegramLongPollingBot {
             for (Answer answer : question.get().getAnswers()
             ) {
                 messageBuilder.append("\n").append((char) charIndex).append(") ").append(answer.getText());
-                InlineKeyboardButton answerButton = new InlineKeyboardButton();
-                answerButton.setText(String.valueOf((char) charIndex));
+                InlineKeyboardButton answerButton = new InlineKeyboardButton(String.valueOf((char) charIndex));
                 answerButton.setCallbackData(CommandStringsHolder.ANSWER + "_" + question.get().getId() + "=" + answer.getId());
                 buttons.add(answerButton);
                 charIndex++;
             }
             message = messageBuilder.toString();
-            inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(formatKeyboard(buttons));
         } else {
             message = "There is no questions";
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(new ArrayList<>());
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
         log.info("Reply {} sent to {}", message, chatId);
@@ -184,25 +188,24 @@ public class BotService extends TelegramLongPollingBot {
 
     private void sendCategoryList(long chatId) {
         String message;
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardMarkup inlineKeyboardMarkup;
         List<Category> categoryList = categoryService.findAll();
         if (categoryList.size() > 0) {
             message = "Select category";
             List<InlineKeyboardButton> buttons = new ArrayList<>();
             for (Category category : categoryList
             ) {
-                InlineKeyboardButton categoryButton = new InlineKeyboardButton();
-                categoryButton.setText(category.getName());
+                InlineKeyboardButton categoryButton = new InlineKeyboardButton(category.getName());
                 categoryButton.setCallbackData(CommandStringsHolder.CATEGORY + "_" + category.getId());
                 buttons.add(categoryButton);
             }
-            InlineKeyboardButton emptyButton = new InlineKeyboardButton();
-            emptyButton.setText("All categories");
+            InlineKeyboardButton emptyButton = new InlineKeyboardButton("All categories");
             emptyButton.setCallbackData(CommandStringsHolder.CATEGORY + "_" + CommandStringsHolder.CATEGORY_ALL);
             buttons.add(emptyButton);
-            inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(formatKeyboard(buttons));
         } else {
             message = "There is no categories";
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(new ArrayList<>());
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
         log.info("Reply on category select request {} sent to user {}", message, chatId);
@@ -210,25 +213,24 @@ public class BotService extends TelegramLongPollingBot {
 
     private void sendLevelList(long chatId) {
         String message;
-        InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
+        InlineKeyboardMarkup inlineKeyboardMarkup;
         List<Level> levelList = levelService.findAll();
         if (levelList.size() > 0) {
             message = "Select level";
             List<InlineKeyboardButton> buttons = new ArrayList<>();
             for (Level level : levelList
             ) {
-                InlineKeyboardButton categoryButton = new InlineKeyboardButton();
-                categoryButton.setText(level.getName());
+                InlineKeyboardButton categoryButton = new InlineKeyboardButton(level.getName());
                 categoryButton.setCallbackData(CommandStringsHolder.LEVEL + "_" + level.getId());
                 buttons.add(categoryButton);
             }
-            InlineKeyboardButton emptyButton = new InlineKeyboardButton();
-            emptyButton.setText("All levels");
+            InlineKeyboardButton emptyButton = new InlineKeyboardButton("All levels");
             emptyButton.setCallbackData(CommandStringsHolder.LEVEL + "_" + CommandStringsHolder.LEVEL_ALL);
             buttons.add(emptyButton);
-            inlineKeyboardMarkup.setKeyboard(formatKeyboard(buttons));
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(formatKeyboard(buttons));
         } else {
             message = "There is no levels";
+            inlineKeyboardMarkup = new InlineKeyboardMarkup(new ArrayList<>());
         }
         sendMessage(chatId, message, inlineKeyboardMarkup);
         log.info("Reply on level select request {} sent to user {}", message, chatId);
@@ -243,7 +245,17 @@ public class BotService extends TelegramLongPollingBot {
     }
 
     @PostConstruct
-    public void notifyAdmins() {
+    public void init() {
+        String token = botConfig.getToken();
+        if (token != null && !token.isBlank()) {
+            telegramClient = new OkHttpTelegramClient(token);
+            notifyAdmins();
+        } else {
+            log.warn("Bot token is not configured, skipping Telegram client initialization");
+        }
+    }
+
+    private void notifyAdmins() {
         InlineKeyboardMarkup keyboard = KeyboardUtils.getMainKeyboard();
         for (Long adminChatId : botConfig.getAdminAccounts()
         ) {

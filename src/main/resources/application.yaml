@@ -13,7 +13,6 @@ spring:
     hibernate:
       ddl-auto: none
     show-sql: true
-    database: postgresql
     defer-datasource-initialization: false
   sql:
     init:
@@ -28,7 +27,9 @@ spring:
 logging:
   file:
     name: logs/bot.log
-    max-size: 1MB
-    max-history: 10
+  logback:
+    rollingpolicy:
+      max-file-size: 1MB
+      max-history: 10
   pattern:
-    rolling-file-name:bot-%d{yyyy-MM-dd}.%i.log
+    rolling-file-name: bot-%d{yyyy-MM-dd}.%i.log
